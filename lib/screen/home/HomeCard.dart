@@ -22,8 +22,9 @@ class HomeCard extends StatelessWidget {
     final harga = NumberFormat.decimalPattern(
       'id_ID',
     ).format(transaction.price);
-    final bikes = transaction.bikes.join(', ');
 
+    // transaction.bikes
+    final bikes = transaction.bikes;
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 1,
@@ -50,9 +51,41 @@ class HomeCard extends StatelessWidget {
                 style: const TextStyle(fontSize: 11, color: Colors.black),
               ),
               const SizedBox(height: 4),
-              Text(
-                "Sepeda: $bikes",
-                style: const TextStyle(fontSize: 11, color: Colors.black),
+
+              ListView.builder(
+                itemCount: bikes.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  final sepeda = bikes[index].name;
+                  final status = bikes[index].status ?? "";
+
+                  return Row(
+                    children: [
+                      Expanded(
+                        flex: 2, // kolom sepeda
+                        child: Text(
+                          sepeda,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        flex: 3, // kolom status
+                        child: Text(
+                          status,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: 4),
               Text(

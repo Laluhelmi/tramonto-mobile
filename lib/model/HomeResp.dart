@@ -20,8 +20,8 @@ class TransactionResponse {
 
   Map<String, dynamic> toJson() {
     return {
-      'data': data.map((x) => x.toJson()).toList(),
-      'total': total,
+      'data'  : data.map((x) => x.toJson()).toList(),
+      'total' : total,
     };
   }
 }

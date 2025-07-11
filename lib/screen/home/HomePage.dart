@@ -127,8 +127,6 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 12),
                   Text("Hotel: ${data.address}"),
                   const SizedBox(height: 12),
-                  Text("Status: ${data.status}"),
-                  const SizedBox(height: 20),
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(

@@ -53,7 +53,7 @@ late Future<List<Bike>> futureBikes;
             itemCount   : bikes.length,
             itemBuilder : (context, index) {
               final bike = bikes[index];
-              return Bikecard(name: bike.name, passcode: bike.passcode);
+              return Bikecard(name: bike.name, passcode: bike.passcode ?? "");
             },
           ),
         );

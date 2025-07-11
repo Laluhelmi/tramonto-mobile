@@ -14,10 +14,10 @@ class BikeRentalForm extends StatefulWidget {
 
 class _BikeRentalFormState extends State<BikeRentalForm> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController    = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _phoneController   = TextEditingController();
-  final TextEditingController _priceController   = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
 
   List<Bike> _bikeList = [];
   List<Bike> _selectedBikes = [];
@@ -53,6 +53,7 @@ class _BikeRentalFormState extends State<BikeRentalForm> {
       }
 
       int duration = _endDate!.difference(_startDate!).inDays;
+      print(formatDateTimeWithUTC(_startDate!));
       if (duration <= 0) duration = 1;
 
       setState(() {
@@ -62,8 +63,9 @@ class _BikeRentalFormState extends State<BikeRentalForm> {
             address: _addressController.text,
             phoneNumber: _phoneController.text,
             price: int.tryParse(_priceController.text.replaceAll('.', '')) ?? 0,
-            duration: duration,
             bikeIds: _selectedBikes.map((b) => b.id).toList(),
+            startTime: formatDateTimeWithUTC(_startDate!),
+            endTime: formatDateTimeWithUTC(_endDate!)
           ),
         );
       });
@@ -84,8 +86,8 @@ class _BikeRentalFormState extends State<BikeRentalForm> {
     if (pickedDate == null) return;
 
     final pickedTime = await showTimePicker(
-      context     : context,
-      initialTime : TimeOfDay.fromDateTime(initialDate),
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(initialDate),
     );
 
     if (pickedTime == null) return;
@@ -122,8 +124,17 @@ class _BikeRentalFormState extends State<BikeRentalForm> {
             children: [
               _buildTextField("Nama", _nameController),
               _buildTextField("Hotel", _addressController),
-              _buildTextField("No Telp", _phoneController, keyboardType: TextInputType.phone),
-              _buildTextField("Harga", _priceController, prefixText: "Rp ", isCurrency: true),
+              _buildTextField(
+                "No Telp",
+                _phoneController,
+                keyboardType: TextInputType.phone,
+              ),
+              _buildTextField(
+                "Harga",
+                _priceController,
+                prefixText: "Rp ",
+                isCurrency: true,
+              ),
               _buildDatePickers(),
               _buildMultiSelectBike(),
               const SizedBox(height: 24),
@@ -131,7 +142,9 @@ class _BikeRentalFormState extends State<BikeRentalForm> {
                 onPressed: _submit,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: const Text("Rent Bike", style: TextStyle(fontSize: 16)),
@@ -153,18 +166,22 @@ class _BikeRentalFormState extends State<BikeRentalForm> {
           Expanded(
             child: OutlinedButton(
               onPressed: () => _selectDateTime(isStart: true),
-              child: Text(_startDate == null
-                  ? "Mulai"
-                  : DateFormat('dd MMM yyyy – HH:mm').format(_startDate!)),
+              child: Text(
+                _startDate == null
+                    ? "Mulai"
+                    : DateFormat('dd MMM yyyy – HH:mm').format(_startDate!),
+              ),
             ),
           ),
           const SizedBox(width: 10),
           Expanded(
             child: OutlinedButton(
               onPressed: () => _selectDateTime(isStart: false),
-              child: Text(_endDate == null
-                  ? "Selesai"
-                  : DateFormat('dd MMM yyyy – HH:mm').format(_endDate!)),
+              child: Text(
+                _endDate == null
+                    ? "Selesai"
+                    : DateFormat('dd MMM yyyy – HH:mm').format(_endDate!),
+              ),
             ),
           ),
         ],
@@ -179,9 +196,15 @@ class _BikeRentalFormState extends State<BikeRentalForm> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Text('❌ ${snapshot.error}', style: const TextStyle(color: Colors.red));
+          return Text(
+            '❌ ${snapshot.error}',
+            style: const TextStyle(color: Colors.red),
+          );
         } else if (snapshot.hasData) {
-          return Text(snapshot.data!, style: const TextStyle(color: Colors.green));
+          return Text(
+            snapshot.data!,
+            style: const TextStyle(color: Colors.green),
+          );
         } else {
           return const SizedBox.shrink();
         }
@@ -209,7 +232,8 @@ class _BikeRentalFormState extends State<BikeRentalForm> {
           suffixText: suffixText,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        validator: (value) => (value == null || value.isEmpty) ? 'Masukkan $label' : null,
+        validator: (value) =>
+            (value == null || value.isEmpty) ? 'Masukkan $label' : null,
       ),
     );
   }
@@ -226,10 +250,13 @@ class _BikeRentalFormState extends State<BikeRentalForm> {
             ),
             decoration: InputDecoration(
               labelText: "Pilih Sepeda (multi)",
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
               suffixIcon: const Icon(Icons.arrow_drop_down),
             ),
-            validator: (_) => _selectedBikes.isEmpty ? 'Pilih minimal 1 sepeda' : null,
+            validator: (_) =>
+                _selectedBikes.isEmpty ? 'Pilih minimal 1 sepeda' : null,
           ),
         ),
       ),
@@ -290,6 +317,12 @@ class _BikeRentalFormState extends State<BikeRentalForm> {
       });
     }
   }
+
+
+  String formatDateTimeWithUTC(DateTime dateTime) {
+    final formatter = DateFormat("yyyy-MM-dd HH:mm:ss");
+    return "${formatter.format(dateTime.toUtc())}+00";
+  }
 }
 
 /// ✅ Currency Formatter untuk input harga
@@ -297,7 +330,10 @@ class _CurrencyInputFormatter extends TextInputFormatter {
   final NumberFormat _formatter = NumberFormat.decimalPattern('id_ID');
 
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     String digitsOnly = newValue.text.replaceAll(RegExp(r'[^\d]'), '');
     if (digitsOnly.isEmpty) return newValue.copyWith(text: '');
 

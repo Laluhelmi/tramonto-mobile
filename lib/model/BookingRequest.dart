@@ -3,16 +3,18 @@ class BookingRequest {
   final String    address;
   final String    phoneNumber;
   final int       price;
-  final int       duration;
   final List<int> bikeIds;
+  final String    startTime;
+  final String    endTime;
 
   BookingRequest({
     required this.name,
     required this.address,
     required this.phoneNumber,
     required this.price,
-    required this.duration,
     required this.bikeIds,
+    required this.startTime,
+    required this.endTime,
   });
 
   factory BookingRequest.fromJson(Map<String, dynamic> json) {
@@ -21,8 +23,9 @@ class BookingRequest {
       address     : json['address'],
       phoneNumber : json['phoneNumber'],
       price       : json['price'],
-      duration    : json['duration'],
       bikeIds     : List<int>.from(json['bikeIds']),
+      startTime   : json['startTime'],
+      endTime     : json['endTime'],
     );
   }
 
@@ -32,8 +35,9 @@ class BookingRequest {
       'address'     : address,
       'phoneNumber' : phoneNumber,
       'price'       : price,
-      'duration'    : duration,
       'bikeIds'     : bikeIds,
+      'startTime'   : startTime,
+      'endTime'     : endTime,
     };
   }
 }

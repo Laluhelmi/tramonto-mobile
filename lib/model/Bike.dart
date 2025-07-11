@@ -1,27 +1,31 @@
 class Bike {
   final int id;
   final String name;
-  final String passcode;
+  final String? passcode;
+  final String? status;
 
   Bike({
     required this.id,
     required this.name,
-    required this.passcode,
+    this.passcode,
+    this.status,
   });
 
   factory Bike.fromJson(Map<String, dynamic> json) {
     return Bike(
-      id: json['id'],
-      name: json['name'],
-      passcode: json['passcode'],
+      id      : json['id'] as int,
+      name    : json['name'] ?? '',
+      passcode: json['passcode'] ?? '', // aman jika null
+      status  : json['status'] ?? '',     // aman jika null
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
+      'id'      : id,
+      'name'    : name,
       'passcode': passcode,
+      'status'  : status,
     };
   }
 }

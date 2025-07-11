@@ -1,3 +1,5 @@
+import 'package:tramontonbike/model/Bike.dart';
+
 class Renttransac {
   final String name;
   final int transactionId;
@@ -6,8 +8,7 @@ class Renttransac {
   final DateTime endTime;
   final String phoneNumber;
   final int price;
-  final List<String> bikes;
-  final String status;
+  final List<Bike> bikes;
   final String address;
 
   Renttransac({
@@ -19,7 +20,6 @@ class Renttransac {
     required this.phoneNumber,
     required this.price,
     required this.bikes,
-    required this.status,
     required this.address,
   });
 
@@ -32,9 +32,10 @@ class Renttransac {
       endTime: DateTime.parse(json['end_time']),
       phoneNumber: json['phone_number'],
       price: json['price'],
-      bikes: List<String>.from(json['bikes']),
-      status: json['status'],
-      address: json['address']
+      bikes: (json['bikes'] as List<dynamic>)
+          .map((bikeJson) => Bike.fromJson(bikeJson))
+          .toList(),
+      address: json['address'],
     );
   }
 
@@ -47,8 +48,8 @@ class Renttransac {
       'end_time': endTime.toIso8601String(),
       'phone_number': phoneNumber,
       'price': price,
-      'bikes': bikes,
-      'status': status,
+      'bikes': bikes.map((bike) => bike.toJson()).toList(),
+      'address': address,
     };
   }
 }

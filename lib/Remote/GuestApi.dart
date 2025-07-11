@@ -65,7 +65,8 @@ class ApiService {
       "address"         : request.address,
       "phoneNumber"     : request.phoneNumber,
       "price"           : request.price,
-      "duration"        : request.duration,
+      "startTime"       : request.startTime,
+      "endTime"         : request.endTime,
       "bikeIds"         : request.bikeIds,
     };
 
